@@ -26,6 +26,10 @@ public abstract class Storyline {
         this.dialogues = dialogues;
     }
 
+    public int getStage() {
+        return stage;
+    }
+
     public void advance() {
         if (stage < dialogues.size() - 1) {
             stage++;

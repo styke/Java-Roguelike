@@ -4,7 +4,7 @@ import game.Entity;
 import game.EntityType;
 import game.Renderer;
 
-public class Wall extends Entity {
+public class Grass extends Entity {
     @Override
     public EntityType getType() {
         return EntityType.TILE;
@@ -17,11 +17,6 @@ public class Wall extends Entity {
 
     @Override
     public void render(Renderer renderer) {
-        renderer.drawSprite(getX(), getY(), 3, 0);
-    }
-
-    @Override
-    public boolean canPass(Entity sender) {
-        return false;
+        renderer.drawSprite(getX(), getY(), 4, 0);
     }
 }

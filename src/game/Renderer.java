@@ -4,30 +4,27 @@ import gui.FlowLayout;
 import gui.Orientation;
 import gui.Popup;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Renderer {
-    private BufferedImage spritesheet;
-    private int tileSource;
+    private Spritesheet fontsheet;
+    private Spritesheet spritesheet;
+    private int fontSize;
     private int tileSize;
     private Graphics g;
-    private FlowLayout root;
-    private Popup popup;
     private int width, height;
 
-    public Renderer(int tileSize, int width, int height) {
-        try {
-            spritesheet = ImageIO.read(Renderer.class.getResourceAsStream("../terminal.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        tileSource = 8;
-        this.tileSize = tileSize;
-        this.width = width / tileSize;
-        this.height = height / tileSize;
+    private FlowLayout root;
+    private Popup popup;
+
+    public Renderer(int width, int height) {
+        spritesheet = new Spritesheet("../spritesheet.png", 16);
+        fontsheet = new Spritesheet("../terminal.png", 8);
+
+        this.fontSize = 16;
+        this.tileSize = 32;
+        this.width = width;
+        this.height = height;
 
         root = new FlowLayout(Orientation.HORIZONTAL);
         popup = new Popup();
@@ -54,6 +51,8 @@ public class Renderer {
     }
 
     public void renderPopup() {
+        popup.setX(getWidth() / getFontSize() / 2 - popup.getWidth() / 2);
+        popup.setY(getHeight() / getFontSize() / 2 - popup.getHeight() / 2);
         popup.render(this);
     }
 
@@ -65,18 +64,22 @@ public class Renderer {
         return popup;
     }
 
-    public void drawSprite(int dx, int dy, int sx, int sy) {
-        int dxt = dx * tileSize;
-        int dyt = dy * tileSize;
-        int sxt = sx * tileSource;
-        int syt = sy * tileSource;
-        g.drawImage(spritesheet, dxt, dyt, dxt + tileSize, dyt + tileSize, sxt, syt, sxt + tileSource, syt + tileSource, null);
+    public void drawSprite(int x, int y, int spriteX, int spriteY) {
+        spritesheet.drawSprite(g, x, y, spriteX, spriteY, tileSize);
+    }
+
+    public int getFontSize() {
+        return fontSize;
     }
 
     public void drawChar(int x, int y, char c) {
         int cx = c / 16;
         int cy = c % 16;
-        drawSprite(x, y, cx, cy);
+        drawChar(x, y, cx, cy);
+    }
+
+    public void drawChar(int x, int y, int charX, int charY) {
+        fontsheet.drawSprite(g, x, y, charX, charY, fontSize);
     }
 
     public void drawText(int x, int y, String s) {
@@ -88,13 +91,13 @@ public class Renderer {
 
     public void drawHLine(int x, int y, int len) {
         for (int i = x; i < x + len; i++) {
-            drawSprite(i, y, 12, 4);
+            drawChar(i, y, 12, 4);
         }
     }
 
     public void drawVLine(int x, int y, int len) {
         for (int i = y; i < y + len; i++) {
-            drawSprite(x, i, 11, 3);
+            drawChar(x, i, 11, 3);
         }
     }
 
@@ -105,10 +108,16 @@ public class Renderer {
         drawHLine(x + 1, y + h, w - 1);
         drawVLine(x, y + 1, h - 1);
         drawVLine(x + w, y + 1, h - 1);
-        drawSprite(x, y + h, 12, 0);
-        drawSprite(x + w, y + h, 13, 9);
-        drawSprite(x, y, 13, 10);
-        drawSprite(x + w, y, 11, 15);
+        drawChar(x, y + h, 12, 0);
+        drawChar(x + w, y + h, 13, 9);
+        drawChar(x, y, 13, 10);
+        drawChar(x + w, y, 11, 15);
+
+        for (int i = x + 1; i < x + w; i++) {
+            for (int j = y + 1; j < y + h; j++) {
+                drawChar(i, j, ' ');
+            }
+        }
     }
 
     public void drawTextWrapped(int x, int y, int maxLength, String s) {

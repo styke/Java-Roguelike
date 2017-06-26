@@ -19,15 +19,19 @@ public class Popup extends Element {
     }
 
     @Override
+    public void onKey(boolean[] keys) {
+        super.onKey(keys);
+        display.onKey(keys);
+    }
+
+    @Override
     public void render(Renderer renderer) {
         if (display != null) {
-            int cx = renderer.getWidth() / 2;
-            int cy = renderer.getHeight() / 2;
             int dw = display.getWidth();
             int dh = display.getHeight();
-            renderer.drawRect(cx - dw / 2 - 1, cy - dh / 2 - 1, dw + 2, dh + 2);
-            display.setX(cx - dw / 2);
-            display.setY(cy - dh / 2);
+            renderer.drawRect(getX(), getY(), dw + 2, dh + 2);
+            display.setX(getX() + 1);
+            display.setY(getY() + 1);
             display.render(renderer);
         }
     }

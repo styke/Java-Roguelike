@@ -12,7 +12,7 @@ public class DialogueOptionAdvance implements IDialogueOption {
     }
 
     @Override
-    public String getOptionLabel() {
+    public String toString() {
         return label;
     }
 

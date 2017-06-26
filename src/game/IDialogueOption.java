@@ -1,7 +1,7 @@
 package game;
 
 public interface IDialogueOption {
-    String getOptionLabel();
+    String toString();
 
     void onSelected(Storyline storyline, Entity entity);
 }

@@ -1,4 +1,5 @@
 import entities.Door;
+import entities.Grass;
 import entities.Player;
 import entities.Wall;
 import game.GameState;
@@ -30,16 +31,18 @@ public class Main extends Canvas implements Runnable, KeyListener {
         addKeyListener(this);
         gameState = GameState.getInstance();
 
-        renderer = new Renderer(16, 800, 600);
-        world = new World(60, 37);
+        renderer = new Renderer(1280, 720);
+        world = new World(renderer.getWidth() / renderer.getTileSize(), renderer.getHeight() / renderer.getTileSize());
         player = new Player();
-        player.setPosition(10, 10);
+        player.setPosition(2, 2);
 
-        Door door = new Door(false);
-        door.setPosition(10, 11);
-        world.addEntity(player);
-        world.addEntity(door);
-
+        for (int i = 5; i < 10; i++) {
+            for (int j = 5; j < 10; j++) {
+                Grass w = new Grass();
+                w.setPosition(i, j);
+                world.addEntity(w);
+            }
+        }
 
         for (int i = 5; i < 10; i++) {
             Wall w = new Wall();
@@ -47,11 +50,16 @@ public class Main extends Canvas implements Runnable, KeyListener {
             world.addEntity(w);
         }
 
+        Door door = new Door(false);
+        door.setPosition(7, 5);
+        world.addEntity(player);
+        world.addEntity(door);
+
         world.onInitGUI(renderer.getRootLayout(), renderer.getPopup());
     }
 
     public static void main(String[] args) {
-        Dimension dimension = new Dimension(800, 600);
+        Dimension dimension = new Dimension(1280, 720);
 
         JFrame frame = new JFrame("Game");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -84,12 +92,12 @@ public class Main extends Canvas implements Runnable, KeyListener {
     }
 
     private BufferStrategy prepareBufferStrategy() {
-        BufferStrategy bs = getBufferStrategy();
-        if (bs == null) {
+        BufferStrategy bufferStrategy = getBufferStrategy();
+        if (bufferStrategy == null) {
             createBufferStrategy(4);
             return prepareBufferStrategy();
         }
-        return bs;
+        return bufferStrategy;
     }
 
     private void render() {
@@ -111,13 +119,14 @@ public class Main extends Canvas implements Runnable, KeyListener {
     }
 
     private void input() {
+        // TODO: Implement keybindings
         if (gameState == GameState.PLAYING) {
             world.onKey(keys);
         } else if (gameState == GameState.POPUP) {
             if (keys[VK_ESCAPE]) {
                 renderer.getPopup().setDisplay(null);
             } else {
-                renderer.getPopup().getDisplay().onKey(keys);
+                renderer.getPopup().onKey(keys);
             }
         }
     }
@@ -131,14 +140,12 @@ public class Main extends Canvas implements Runnable, KeyListener {
                 gameState = GameState.POPUP;
             }
         }
+
         if (renderer.getPopup().getDisplay() == null) {
             gameState = GameState.PLAYING;
             world.update();
         } else {
             gameState = GameState.POPUP;
-        }
-
-        if (gameState == GameState.POPUP) {
             renderer.updatePopup();
         }
 
@@ -162,7 +169,6 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
             while (accum >= factor) {
                 accum -= factor;
-                input();
                 update();
                 updated = true;
             }
@@ -181,10 +187,12 @@ public class Main extends Canvas implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         keys[e.getKeyCode()] = true;
+        input();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         keys[e.getKeyCode()] = false;
+        input();
     }
 }

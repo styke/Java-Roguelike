@@ -4,8 +4,7 @@ import game.Renderer;
 
 import java.util.ArrayList;
 
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_UP;
+import static java.awt.event.KeyEvent.*;
 
 public class List<T> extends Element {
     private int selected;
@@ -13,10 +12,16 @@ public class List<T> extends Element {
 
     private boolean keyUp = false;
     private boolean keyDown = false;
+    private boolean keySelect = false;
+    private IListItemSelectHandler<T> handler;
 
     public List() {
         selected = 0;
         items = new ArrayList<>();
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
     }
 
     public void up() {
@@ -41,6 +46,7 @@ public class List<T> extends Element {
     }
 
     public void setModel(ArrayList<T> items) {
+        selected = 0;
         this.items = items;
     }
 
@@ -71,6 +77,10 @@ public class List<T> extends Element {
         return maxLength + 1;
     }
 
+    public void setHandler(IListItemSelectHandler<T> handler) {
+        this.handler = handler;
+    }
+
     @Override
     public int getHeight() {
         return items.size();
@@ -78,17 +88,26 @@ public class List<T> extends Element {
 
     @Override
     public void onKey(boolean[] keys) {
-        if (keyDown && !keys[VK_DOWN]) {
-            keyDown = false;
-            down();
-        } else if (keyUp && !keys[VK_UP]) {
-            keyUp = false;
-            up();
-        } else {
-            if (keys[VK_DOWN]) {
-                keyDown = true;
-            } else if (keys[VK_UP]) {
-                keyUp = true;
+        if (items.size() > 0) {
+            if (keyDown && !keys[VK_DOWN]) {
+                keyDown = false;
+                down();
+            } else if (keyUp && !keys[VK_UP]) {
+                keyUp = false;
+                up();
+            } else if (keySelect && !keys[VK_E]) {
+                if (handler != null) {
+                    keySelect = false;
+                    handler.onItemSelected(getSelected(), selected);
+                }
+            } else {
+                if (keys[VK_DOWN]) {
+                    keyDown = true;
+                } else if (keys[VK_UP]) {
+                    keyUp = true;
+                } else if (keys[VK_E]) {
+                    keySelect = true;
+                }
             }
         }
     }

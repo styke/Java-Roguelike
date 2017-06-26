@@ -35,9 +35,9 @@ public class Door extends Entity {
     @Override
     public void render(Renderer renderer) {
         if (unlocked) {
-            renderer.drawSprite(getX(), getY(), 11, 0);
+            renderer.drawSprite(getX(), getY(), 1, 0);
         } else {
-            renderer.drawSprite(getX(), getY(), 11, 1);
+            renderer.drawSprite(getX(), getY(), 0, 0);
         }
     }
 }

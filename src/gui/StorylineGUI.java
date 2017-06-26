@@ -1,30 +1,33 @@
 package gui;
 
 import game.Dialogue;
+import game.Entity;
 import game.IDialogueOption;
 import game.Storyline;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StorylineGUI extends FlowLayout {
     public Storyline storyline;
 
     private TextView textViewDialogue;
-    private List<String> listOptions;
-    private int i;
-    private int frame = 0;
-    private boolean animationDone = false;
-    private boolean itemsAdded = false;
+    private List<IDialogueOption> listOptions;
+    private Dialogue currentDialogue;
 
-    public StorylineGUI(Storyline storyline) {
+    public StorylineGUI(Entity owner, Storyline storyline) {
         super(Orientation.VERTICAL);
 
-        textViewDialogue = new TextView();
         this.storyline = storyline;
-        Dialogue dialogue = storyline.getCurrentDialogue();
 
+        textViewDialogue = new TextView();
         textViewDialogue.setWrapped(true);
-        textViewDialogue.setWrappedLength(40);
+        textViewDialogue.setWrappedLength(25);
 
         listOptions = new List<>();
+        listOptions.setHandler((item, index) -> {
+            item.onSelected(storyline, owner);
+        });
 
         addElement(textViewDialogue);
         addElement(listOptions);
@@ -34,20 +37,19 @@ public class StorylineGUI extends FlowLayout {
     public void update() {
         super.update();
 
-        frame++;
-        Dialogue dialogue = storyline.getCurrentDialogue();
-        if (frame >= 3 && i < dialogue.getText().length()) {
-            i++;
-            frame = 0;
-            textViewDialogue.setText(dialogue.getText().substring(0, i));
-            if (i == dialogue.getText().length()) animationDone = true;
-        }
+        if (currentDialogue != storyline.getCurrentDialogue()) {
+            currentDialogue = storyline.getCurrentDialogue();
+            Dialogue dialogue = storyline.getCurrentDialogue();
 
-        if (animationDone && !itemsAdded) {
-            for (IDialogueOption option : dialogue.getOptions()) {
-                listOptions.getModel().add(option.getOptionLabel());
-            }
-            itemsAdded = true;
+            listOptions.setModel(new ArrayList<>(Arrays.asList(dialogue.getOptions())));
+
+            textViewDialogue.setText(dialogue.getText());
         }
+    }
+
+    @Override
+    public void onKey(boolean[] keys) {
+        super.onKey(keys);
+        listOptions.onKey(keys);
     }
 }

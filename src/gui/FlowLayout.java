@@ -42,7 +42,7 @@ public class FlowLayout extends Element {
             if (orientation == Orientation.VERTICAL) {
                 y += e.getHeight();
             } else {
-                x += e.getWidth() + 1;
+                x += e.getWidth();
             }
             e.render(renderer);
         }

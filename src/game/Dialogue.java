@@ -4,6 +4,11 @@ public class Dialogue {
     private String text;
     private IDialogueOption[] options;
 
+    public Dialogue() {
+        text = "";
+        options = new IDialogueOption[]{};
+    }
+
     public String getText() {
         return text;
     }
