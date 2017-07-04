@@ -8,11 +8,11 @@ public abstract class Item {
 
     public abstract String getName();
 
-    public void onUsedOnEntity(Entity sender, Entity target) {
+    public void doDamage(Entity target) {
 
     }
 
-    public void onConsume(Entity sender) {
+    public void onConsumed(Entity sender) {
 
     }
 }

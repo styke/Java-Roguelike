@@ -181,7 +181,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        keys[e.getKeyCode()] = true;
+        input();
     }
 
     @Override

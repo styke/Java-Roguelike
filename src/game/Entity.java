@@ -7,11 +7,20 @@ public abstract class Entity {
 
     private int x, y;
     private World world;
+    private boolean dead = false;
 
     public void setPosition(int x, int y) {
         if (world != null) world.moveEntity(this.x, this.y, x, y, getType());
         this.x = x;
         this.y = y;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     public abstract EntityType getType();
@@ -57,10 +66,21 @@ public abstract class Entity {
     public void onKey(boolean[] keys) {
     }
 
+    public void takeDamage(int amount) {
+
+    }
+
+    public void onAttacked(Entity sender, Item item) {
+    }
+
     public void onInteract(Entity sender) {
     }
 
     public boolean canPass(Entity sender) {
         return true;
+    }
+
+    public Inventory getInventory() {
+        return null;
     }
 }

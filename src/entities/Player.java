@@ -26,63 +26,13 @@ public class Player extends Entity {
         playerGUI = new PlayerGUI(this);
         inventoryGUI = new InventoryGUI(inventory);
 
-        // TEST
-        // TODO: Bug (text overlaps)
-        Storyline storyline = new Storyline() {
-            @Override
-            public void onFinished() {
-
-            }
-        };
-        Dialogue dialogue1 = new Dialogue();
-        dialogue1.setOptions(new IDialogueOption[]{new DialogueOptionAdvance()});
-        dialogue1.setText("Oh... a new wanderer.");
-
-        Dialogue dialogue2 = new Dialogue();
-        dialogue2.setOptions(new IDialogueOption[]{new DialogueOptionAdvance()});
-        dialogue2.setText("Trying to get lost here? Well, that's at least an easy task.");
-
-        Dialogue dialogue3 = new Dialogue();
-        dialogue3.setOptions(new IDialogueOption[]{new DialogueOptionAdvance("Why is that?")});
-        dialogue3.setText("Better leave, before you still can...");
-
-        Dialogue dialogue4 = new Dialogue();
-        dialogue4.setText("Ahh... I met many people like you, so I feel like there's no need to explain further.");
-        storyline.getDialogues().add(dialogue1);
-        storyline.getDialogues().add(dialogue2);
-        storyline.getDialogues().add(dialogue3);
-        storyline.getDialogues().add(dialogue4);
-
-        storylineGUI = new StorylineGUI(this, storyline);
-        //
-
         HP = 10;
         maxHP = 20;
-        speed = 8;
+        speed = 4;
         moveCooldown = 0;
         interactCooldown = 0;
 
         playerGUI.updateData();
-
-        // TEST
-        Item it = new Item() {
-            @Override
-            public String getName() {
-                return "Staff";
-            }
-        };
-        Item it2 = new Item() {
-            @Override
-            public String getName() {
-                return "Staff 2";
-            }
-        };
-
-        inventory.add(new ItemStack(it, 5));
-        inventory.add(new ItemStack(it2, 1));
-        inventory.add(new ItemStack(it2, 2));
-        inventory.add(new ItemStack(it2, 3));
-        //
     }
 
     public int getSpeed() {
