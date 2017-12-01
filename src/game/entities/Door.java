@@ -1,15 +1,22 @@
-package entities;
+package game.entities;
 
 import game.Entity;
 import game.EntityType;
 import game.Renderer;
+import game.components.Positionable;
 
 public class Door extends Entity {
 
     private boolean unlocked;
 
     public Door(boolean unlocked) {
+        super();
         this.unlocked = unlocked;
+    }
+
+    @Override
+    public void initComponents() {
+        addComponent(new Positionable(EntityType.ENTITY));
     }
 
     @Override

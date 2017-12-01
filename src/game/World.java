@@ -1,7 +1,8 @@
 package game;
 
-import gui.FlowLayout;
-import gui.Popup;
+import game.components.Positionable;
+import gui.elements.FlowLayout;
+import gui.elements.Popup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +32,13 @@ public class World {
     }
 
     public void addEntity(Entity entity) {
-        entities[entity.getType().ordinal()][entity.getX() + width * entity.getY()] = entity;
-        entity.onSpawn(this);
+        try {
+            Positionable component = entity.getComponent(Positionable.class);
+            entities[component.getPositioning().ordinal()][component.getX() + component.getY() * width] = entity;
+            entity.onSpawn(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void moveEntity(int x1, int y1, int x2, int y2, EntityType type) {
@@ -81,7 +87,7 @@ public class World {
         for (EntityType type : EntityType.values()) {
             for (Entity e : entities[type.ordinal()]) {
                 if (e != null) {
-                    e.onInitGUI(root, popup);
+                    e.onInitGUI(root);
                 }
             }
         }

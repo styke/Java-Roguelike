@@ -1,6 +1,10 @@
 package gui;
 
-import entities.Player;
+import game.entities.Player;
+import gui.elements.FlowLayout;
+import gui.elements.Orientation;
+import gui.elements.ProgressBar;
+import gui.elements.TextView;
 
 public class PlayerGUI extends FlowLayout {
     private FlowLayout layoutHP;

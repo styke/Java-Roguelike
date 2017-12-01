@@ -1,4 +1,4 @@
-package entities;
+package game.entities;
 
 import game.Entity;
 import game.Inventory;

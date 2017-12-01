@@ -1,7 +1,11 @@
-package entities;
+package game.entities;
 
 import game.*;
-import gui.*;
+import game.components.Positionable;
+import gui.InventoryGUI;
+import gui.PlayerGUI;
+import gui.StorylineGUI;
+import gui.elements.FlowLayout;
 
 import java.awt.event.KeyEvent;
 
@@ -20,11 +24,31 @@ public class Player extends Entity {
     private PlayerGUI playerGUI;
     private InventoryGUI inventoryGUI;
 
-    public Player() {
-        inventory = new Inventory(8);
+    @Override
+    public void initComponents() {
+        addComponent(new Positionable(EntityType.ENTITY));
+    }
 
-        playerGUI = new PlayerGUI(this);
+    public Player() {
+        super();
+        inventory = new Inventory(8);
         inventoryGUI = new InventoryGUI(inventory);
+        inventory.add(new ItemStack(new Item() {
+            @Override
+            public String getName() {
+                return "Health Potion";
+            }
+
+            @Override
+            public void onConsumed(Entity sender) {
+                super.onConsumed(sender);
+                // TODO: Entity component system
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    player.setHP(player.getMaxHP());
+                }
+            }
+        }, 3));
 
         HP = 10;
         maxHP = 20;
@@ -32,6 +56,7 @@ public class Player extends Entity {
         moveCooldown = 0;
         interactCooldown = 0;
 
+        playerGUI = new PlayerGUI(this);
         playerGUI.updateData();
     }
 
@@ -60,9 +85,8 @@ public class Player extends Entity {
     }
 
     @Override
-    public void onInitGUI(FlowLayout root, Popup popup) {
+    public void onInitGUI(FlowLayout root) {
         root.addElement(playerGUI);
-        popup.setDisplay(storylineGUI);
     }
 
     @Override

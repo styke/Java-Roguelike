@@ -4,6 +4,10 @@ import game.Dialogue;
 import game.Entity;
 import game.IDialogueOption;
 import game.Storyline;
+import gui.elements.FlowLayout;
+import gui.elements.List;
+import gui.elements.Orientation;
+import gui.elements.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;

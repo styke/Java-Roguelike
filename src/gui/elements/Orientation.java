@@ -1,4 +1,4 @@
-package gui;
+package gui.elements;
 
 public enum Orientation {
     VERTICAL,

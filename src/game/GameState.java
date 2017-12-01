@@ -1,6 +1,6 @@
 package game;
 
-import gui.Element;
+import gui.elements.Element;
 
 public enum GameState {
     POPUP,
@@ -15,10 +15,11 @@ public enum GameState {
     }
 
     public boolean hasRequestedPopup() {
-        return popupElement != null;
+        return instance == POPUP;
     }
 
     public void clearRequest() {
+        instance = PLAYING;
         popupElement = null;
     }
 
@@ -27,6 +28,11 @@ public enum GameState {
     }
 
     public void requestPopupDisplay(Element element) {
-        popupElement = element;
+        if (element != null) {
+            instance = POPUP;
+            popupElement = element;
+        } else {
+            throw new NullPointerException("GUI Popup cannot be null object.");
+        }
     }
 }

@@ -1,4 +1,4 @@
-package gui;
+package gui.elements;
 
 import game.Renderer;
 

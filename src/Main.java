@@ -1,11 +1,12 @@
-import entities.Door;
-import entities.Grass;
-import entities.Player;
-import entities.Wall;
 import game.GameState;
 import game.Renderer;
 import game.World;
-import gui.Element;
+import game.components.Positionable;
+import game.entities.Door;
+import game.entities.Grass;
+import game.entities.Player;
+import game.entities.Wall;
+import gui.elements.Element;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
     private World world;
     private Player player;
     private boolean[] keys;
-    private GameState gameState; // TODO: Propagate game state to all entities, instead of singleton.
+    private GameState gameState; // TODO: Propagate game state to all game.entities, instead of singleton.
 
     private Main() {
         keys = new boolean[1024];
@@ -34,24 +35,27 @@ public class Main extends Canvas implements Runnable, KeyListener {
         renderer = new Renderer(1280, 720);
         world = new World(renderer.getWidth() / renderer.getTileSize(), renderer.getHeight() / renderer.getTileSize());
         player = new Player();
-        player.setPosition(2, 2);
+        player.getComponent(Positionable.class).setXY(2, 2);
 
         for (int i = 5; i < 10; i++) {
             for (int j = 5; j < 10; j++) {
-                Grass w = new Grass();
-                w.setPosition(i, j);
-                world.addEntity(w);
+                Grass g = new Grass();
+                Positionable positionable = g.getComponent(Positionable.class);
+                positionable.setXY(i, j);
+                world.addEntity(g);
             }
         }
 
         for (int i = 5; i < 10; i++) {
             Wall w = new Wall();
-            w.setPosition(i, 5);
+            Positionable positionable = w.getComponent(Positionable.class);
+            positionable.setXY(i + 5, 5);
             world.addEntity(w);
         }
 
         Door door = new Door(false);
-        door.setPosition(7, 5);
+        door.getComponent(Positionable.class).setXY(3, 5);
+
         world.addEntity(player);
         world.addEntity(door);
 
@@ -73,6 +77,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
         frame.add(main);
         frame.pack();
         frame.setVisible(true);
+        frame.requestFocus();
+        main.requestFocus();
 
         main.start();
     }
@@ -80,6 +86,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
     private void start() {
         thread = new Thread(this);
         running = true;
+
         thread.start();
     }
 
@@ -94,7 +101,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
     private BufferStrategy prepareBufferStrategy() {
         BufferStrategy bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
-            createBufferStrategy(4);
+            createBufferStrategy(3);
             return prepareBufferStrategy();
         }
         return bufferStrategy;
