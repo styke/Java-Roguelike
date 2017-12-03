@@ -1,4 +1,6 @@
-package game;
+package game.story;
+
+import game.Entity;
 
 public interface IDialogueOption {
     String toString();

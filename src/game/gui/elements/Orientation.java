@@ -1,4 +1,4 @@
-package gui.elements;
+package game.gui.elements;
 
 public enum Orientation {
     VERTICAL,

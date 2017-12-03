@@ -1,12 +1,7 @@
-import game.GameState;
+import game.*;
 import game.Renderer;
-import game.World;
-import game.components.Positionable;
-import game.entities.Door;
-import game.entities.Grass;
-import game.entities.Player;
-import game.entities.Wall;
-import gui.elements.Element;
+import game.components.TileRenderable;
+import game.gui.elements.Element;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,43 +18,36 @@ public class Main extends Canvas implements Runnable, KeyListener {
     private BufferStrategy bufferStrategy;
     private Renderer renderer;
     private World world;
-    private Player player;
     private boolean[] keys;
-    private GameState gameState; // TODO: Propagate game state to all game.entities, instead of singleton.
+    private Context context;
 
     private Main() {
         keys = new boolean[1024];
         addKeyListener(this);
-        gameState = GameState.getInstance();
+        context = new Context();
 
         renderer = new Renderer(1280, 720);
         world = new World(renderer.getWidth() / renderer.getTileSize(), renderer.getHeight() / renderer.getTileSize());
-        player = new Player();
-        player.getComponent(Positionable.class).setXY(2, 2);
+        world.setContext(context);
 
-        for (int i = 5; i < 10; i++) {
-            for (int j = 5; j < 10; j++) {
-                Grass g = new Grass();
-                Positionable positionable = g.getComponent(Positionable.class);
-                positionable.setXY(i, j);
-                world.addEntity(g);
+        Entity testEntity = new Entity() {
+            @Override
+            public void initComponents() {
+                //addComponent(new Positionable(EntityType.ENTITY));
+                TileRenderable component = new TileRenderable();
+                component.setSpriteX(2);
+                component.setSpriteY(0);
+                addComponent(component);
             }
-        }
 
-        for (int i = 5; i < 10; i++) {
-            Wall w = new Wall();
-            Positionable positionable = w.getComponent(Positionable.class);
-            positionable.setXY(i + 5, 5);
-            world.addEntity(w);
-        }
+            @Override
+            public void render(Renderer renderer) {
+                super.render(renderer);
+                getComponent(TileRenderable.class).render(renderer);
+            }
+        };
 
-        Door door = new Door(false);
-        door.getComponent(Positionable.class).setXY(3, 5);
-
-        world.addEntity(player);
-        world.addEntity(door);
-
-        world.onInitGUI(renderer.getRootLayout(), renderer.getPopup());
+        world.addEntity(testEntity);
     }
 
     public static void main(String[] args) {
@@ -117,7 +105,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
         renderer.renderRootLayout();
 
-        if (gameState == GameState.POPUP) {
+        if (context.getGameState() == GameState.POPUP) {
             renderer.renderPopup();
         }
 
@@ -127,6 +115,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     private void input() {
         // TODO: Implement keybindings
+        GameState gameState = context.getGameState();
+
         if (gameState == GameState.PLAYING) {
             world.onKey(keys);
         } else if (gameState == GameState.POPUP) {
@@ -139,20 +129,22 @@ public class Main extends Canvas implements Runnable, KeyListener {
     }
 
     private void update() {
-        if (gameState.hasRequestedPopup()) {
-            Element element = gameState.getRequestedPopup();
+        GameState gameState = context.getGameState();
+
+        if (context.hasRequestedPopup()) {
+            Element element = context.getRequestedPopup();
             if (renderer.getPopup().getDisplay() == null) {
-                gameState.clearRequest();
+                context.clearRequest();
                 renderer.getPopup().setDisplay(element);
-                gameState = GameState.POPUP;
+                context.setGameState(GameState.POPUP);
             }
         }
 
         if (renderer.getPopup().getDisplay() == null) {
-            gameState = GameState.PLAYING;
+            context.setGameState(GameState.PLAYING);
             world.update();
         } else {
-            gameState = GameState.POPUP;
+            context.setGameState(GameState.POPUP);
             renderer.updatePopup();
         }
 

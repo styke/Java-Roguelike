@@ -1,8 +1,6 @@
 package game;
 
 import game.components.Positionable;
-import gui.elements.FlowLayout;
-import gui.elements.Popup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +9,7 @@ public class World {
     public static final int DEFAULT_WORLD_SIZE = 30;
     private Entity entities[][];
     private int width, height;
+    private Context context;
 
     public World(int width, int height) {
         this.entities = new Entity[EntityType.values().length][width * height];
@@ -27,6 +26,22 @@ public class World {
         return entities[type.ordinal()][x + width * y];
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+        for (EntityType type : EntityType.values()) {
+            ArrayList<Entity> l = new ArrayList<>(Arrays.asList(entities[type.ordinal()]));
+            for (Entity e : l) {
+                if (e != null) {
+                    e.setContext(context);
+                }
+            }
+        }
+    }
+
     public boolean isEntityAt(int x, int y, EntityType type) {
         return getEntity(x, y, type) != null;
     }
@@ -35,7 +50,8 @@ public class World {
         try {
             Positionable component = entity.getComponent(Positionable.class);
             entities[component.getPositioning().ordinal()][component.getX() + component.getY() * width] = entity;
-            entity.onSpawn(this);
+            entity.setContext(context);
+            entity.onSpawn();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,16 +94,6 @@ public class World {
             for (Entity e : l) {
                 if (e != null) {
                     e.onKey(keys);
-                }
-            }
-        }
-    }
-
-    public void onInitGUI(FlowLayout root, Popup popup) {
-        for (EntityType type : EntityType.values()) {
-            for (Entity e : entities[type.ordinal()]) {
-                if (e != null) {
-                    e.onInitGUI(root);
                 }
             }
         }

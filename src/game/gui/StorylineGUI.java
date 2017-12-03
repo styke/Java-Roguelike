@@ -1,13 +1,13 @@
-package gui;
+package game.gui;
 
-import game.Dialogue;
 import game.Entity;
-import game.IDialogueOption;
-import game.Storyline;
-import gui.elements.FlowLayout;
-import gui.elements.List;
-import gui.elements.Orientation;
-import gui.elements.TextView;
+import game.gui.elements.FlowLayout;
+import game.gui.elements.List;
+import game.gui.elements.Orientation;
+import game.gui.elements.TextView;
+import game.story.Dialogue;
+import game.story.IDialogueOption;
+import game.story.Storyline;
 
 import java.util.ArrayList;
 import java.util.Arrays;

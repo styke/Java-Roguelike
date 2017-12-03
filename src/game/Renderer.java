@@ -1,8 +1,8 @@
 package game;
 
-import gui.elements.FlowLayout;
-import gui.elements.Orientation;
-import gui.elements.Popup;
+import game.gui.elements.FlowLayout;
+import game.gui.elements.Orientation;
+import game.gui.elements.Popup;
 
 import java.awt.*;
 

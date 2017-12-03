@@ -1,4 +1,6 @@
-package game;
+package game.story;
+
+import game.Entity;
 
 public class DialogueOptionAdvance implements IDialogueOption {
     private String label;

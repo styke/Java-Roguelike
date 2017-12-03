@@ -1,4 +1,4 @@
-package game;
+package game.story;
 
 public class Dialogue {
     private String text;
